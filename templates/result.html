@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phishing Website Detection Result</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 80%;
+        max-width: 600px;
+        animation: fadeInUp 0.5s ease-out;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      h1 {
+        color: #4b0082; /* Dark purple */
+        margin-bottom: 20px;
+        text-align: center;
+        animation: fadeInDown 0.5s ease-out;
+      }
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      canvas {
+        display: block;
+        margin: 0 auto;
+        animation: zoomIn 0.5s ease-out;
+      }
+      @keyframes zoomIn {
+        from {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      p {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 16px;
+        animation: slideInLeft 0.5s ease-out;
+      }
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .whois-info {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .whois-info h2 {
+        color: #4b0082;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Phishing Website Detection Result</h1>
+      <p><strong>URL:</strong> {{ url }}</p>
+      {% if p|float >= 50.0%}
+      <p><strong>Not safe to Use</strong> </p>
+  {% else %}
+      <p><strong>Safe to use</strong></p>
+  {% endif %}
+      <p><strong>Phishing Probability:</strong> {{ p }}%</p>
+      <canvas id="probabilityChart" width="300" height="300"></canvas>
+     
+
+      <p>
+        <strong>SSL Validity:</strong> {% if ssl_validity %} Valid {% else %}
+        Invalid {% endif %}
+      </p>
+      {% if ssl_error %}
+      <p><strong>Error:</strong> {{ ssl_error }}</p>
+      {% endif %}
+      <p><strong>DNS Resolution:</strong> {{ dns_resolution }}</p>
+
+      
+
+    <script>
+      var ctx = document.getElementById('probabilityChart').getContext('2d');
+      var probability = "{{p}}" ;
+      var data = {
+          datasets: [{
+              data: [probability, 100 - probability],
+              backgroundColor: [
+                  'rgb(75, 0, 130)', // Dark purple
+                  'rgb(0, 0, 205)' // Medium blue
+              ]
+          }],
+          labels: [
+              'Phishing Probability',
+              'Non-Phishing Probability'
+          ]
+      };
+      var options = {
+          animation: {
+              animateRotate: true
+          }
+      };
+      var myPieChart = new Chart(ctx, {
+          type: 'pie',
+          data: data,
+          options: options
+      });
+    </script>
+  </body>
+</html>
